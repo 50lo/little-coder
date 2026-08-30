@@ -43,6 +43,28 @@ That's the whole install. No clone, no `npm install` in a workspace, no PATH fid
 
 > **Note for `bun add -g` users.** The launcher (`bin/little-coder.mjs`) is a Node.js script with `#!/usr/bin/env node` at the top, so Node ≥ 22.19 still has to be on your PATH for the binary to start — bun is fine for installing/updating the package, but the runtime is Node. If you want a fully node-less setup, replace the shebang in `$(bun pm bin -g)/little-coder` with `#!/usr/bin/env bun`.
 
+### Install a local checkout
+
+To install the version in a local clone, including your local changes:
+
+```bash
+git clone https://github.com/itayinbarr/little-coder.git
+cd little-coder
+npm ci
+npm test
+npm run typecheck
+npm install -g .
+```
+
+little-coder has no compile step: its TypeScript extensions are loaded directly at launch. `npm install -g .` installs the current checkout as the global `little-coder` command. Confirm that the command resolves to the local installation with:
+
+```bash
+command -v little-coder
+little-coder --list-models
+```
+
+When you change the checkout, run `npm install -g .` again to install the updated version. For an editable development link that picks up changes without reinstalling, use [`npm link`](#developing-little-coder-locally) instead.
+
 ## Run
 
 ```bash
@@ -457,12 +479,12 @@ If you want to hack on the extensions or skills:
 ```bash
 git clone https://github.com/itayinbarr/little-coder.git
 cd little-coder
-npm install
-npm link            # makes the local checkout available as `little-coder`
+npm ci
+npm link
 little-coder --model llamacpp/qwen3.6-35b-a3b
 ```
 
-To unlink: `npm unlink -g little-coder`.
+`npm link` makes the local checkout available as `little-coder`, so edits are picked up immediately. To remove that symlink and return to a normal global install, run `npm unlink -g little-coder` and then `npm install -g little-coder` (or `npm install -g .` to keep using the checkout).
 
 The benchmarks harness (`benchmarks/`) is dev-only and not shipped with the npm package. Run it from a clone with `python3 benchmarks/aider_polyglot.py …` etc.
 
