@@ -171,6 +171,9 @@ function promptYesNo(question, timeoutMs = 0) {
 //   at the latest version, prints a short "up to date" notice instead of
 //   silently returning.
 export async function checkForUpdate(currentVersion, opts = {}) {
+  // Skip updates because Anton uses custom mod
+  return false;
+  
   const skip = opts.skip ?? shouldSkip();
   if (skip === true) return false;
 
